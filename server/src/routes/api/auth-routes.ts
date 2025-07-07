@@ -2,9 +2,7 @@ import { Router, Request, Response } from "express";
 import { User } from "../../models/index";
 import { signToken } from "../../utils/auth";
 import { UserProps } from "../../types/user";
-import { ListProps } from "../../types/list";
 import { PayloadProps } from "../../types/payload";
-import { dot } from "node:test/reporters";
 import dotenv from "dotenv";
 
 dotenv.config();
