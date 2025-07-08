@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import { List, Task, User, ListMember } from "../../models/index";
-import { isListOwner, isListMember } from "../../middleware/authMiddleware";
+import { isListOwner, isListMember, isAuthenticated } from "../../middleware/authMiddleware";
 import { ListProps } from "../../types/list";
 
 const router = Router();
@@ -62,7 +62,7 @@ router.get("/:id", async (req: Request, res: Response) => {
 
 
 // Create a new list
-router.post("/", async (req: Request, res: Response) => {
+router.post("/", isAuthenticated, async (req: Request, res: Response) => {
     try {
         const { name, userId } = req.body!;
 

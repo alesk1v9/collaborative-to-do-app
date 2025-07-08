@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
 import { User, List, Task } from "../../models/index";
+import { isListOwner, isListMember, isAuthenticated } from "../../middleware/authMiddleware";
 import { UserProps } from "../../types/user";
 
 const router = Router();
@@ -57,7 +58,7 @@ router.get("/:id", async (req: Request, res: Response) => {
 });
 
 // Update a user by ID
-router.put("/:id", async (req: Request, res: Response) => {
+router.put("/:id", isAuthenticated, async (req: Request, res: Response) => {
     try {
         const userId = req.params.id;
         const { name, email, password } = req.body;
@@ -85,7 +86,7 @@ router.put("/:id", async (req: Request, res: Response) => {
 });
 
 // Delete a user by ID
-router.delete("/:id", async (req: Request, res: Response) => {
+router.delete("/:id", isAuthenticated, async (req: Request, res: Response) => {
     try {
         const userId = req.params.id;
 

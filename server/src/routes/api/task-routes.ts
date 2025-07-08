@@ -1,6 +1,8 @@
 import { Router, Request, Response } from "express";
 import { User, List, Task } from "../../models/index";
 import { TaskProps } from "../../types/task";
+import { isListOwner, isListMember, isAuthenticated } from "../../middleware/authMiddleware";
+
 
 const router = Router();
 
@@ -57,7 +59,7 @@ router.get("/:id", async (req: Request, res: Response) => {
 });
 
 // Create a new task
-router.post("/", async (req: Request, res: Response) => {
+router.post("/", isListOwner, async (req: Request, res: Response) => {
     try {
         const newTask: TaskProps = req.body;
         const createdTask = await Task.create(newTask);
@@ -69,7 +71,7 @@ router.post("/", async (req: Request, res: Response) => {
 });
 
 // Update a task by ID
-router.put("/:id", async (req: Request, res: Response) => {
+router.put("/:id", isListOwner, async (req: Request, res: Response) => {
     try {
         const taskId = req.params.id;
         const updatedData: Partial<TaskProps> = req.body;
@@ -95,7 +97,7 @@ router.put("/:id", async (req: Request, res: Response) => {
 });
 
 // Delete a task by ID
-router.delete("/:id", async (req: Request, res: Response) => {
+router.delete("/:id", isListOwner, async (req: Request, res: Response) => {
     try {
         const taskId = req.params.id;
         const deletedCount = await Task.destroy({ where: { id: taskId } });
@@ -113,7 +115,7 @@ router.delete("/:id", async (req: Request, res: Response) => {
 
 
 // Mark a task as completed
-router.patch("/:id/complete", async (req: Request, res: Response) => {
+router.patch("/:id/complete", isListOwner || isListMember, async (req: Request, res: Response) => {
     try {
         const taskId = req.params.id;
         const { completedById } = req.body;
@@ -136,7 +138,7 @@ router.patch("/:id/complete", async (req: Request, res: Response) => {
 });
 
 // Assign a task to a user
-router.patch("/:id/assign", async (req: Request, res: Response) => {
+router.patch("/:id/assign", isListOwner, async (req: Request, res: Response) => {
     try {
         const taskId = req.params.id;
         const { assignedToId } = req.body;
@@ -158,7 +160,7 @@ router.patch("/:id/assign", async (req: Request, res: Response) => {
 });
 
 // Get tasks by list ID
-router.get("/list/:listId", async (req: Request, res: Response) => {
+router.get("/list/:listId", isListOwner || isListMember, async (req: Request, res: Response) => {
     try {
         const listId = req.params.listId;
         const tasks: TaskProps[] = await Task.findAll({

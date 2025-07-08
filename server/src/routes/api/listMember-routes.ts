@@ -1,10 +1,11 @@
 import { Router, Request, Response } from "express";
 import { User, ListMember, List } from "../../models/index";
+import { isListOwner, isListMember, isAuthenticated } from "../../middleware/authMiddleware";
 
 const router = Router();
 
 // Get all members of a list
-router.get("/:listId/members", async (req: Request, res: Response) => {
+router.get("/:listId/members", isListOwner || isListMember, async (req: Request, res: Response) => {
     const listId = req.params.listId;
     try {
         const members = await ListMember.findAll({
@@ -19,7 +20,7 @@ router.get("/:listId/members", async (req: Request, res: Response) => {
 });
 
 // Add a member to a list
-router.post("/:listId/members", async (req: Request, res: Response) => {
+router.post("/:listId/members", isListOwner, async (req: Request, res: Response) => {
     const listId = +req.params.listId;
     const { userId, role } = req.body;
 
@@ -43,7 +44,7 @@ router.post("/:listId/members", async (req: Request, res: Response) => {
 });
 
 // Remove a member from a list
-router.delete("/:listId/members/:userId", async (req: Request, res: Response) => {
+router.delete("/:listId/members/:userId", isListOwner, async (req: Request, res: Response) => {
     const listId = +req.params.listId;
     const userId = +req.params.userId;
 
@@ -64,7 +65,7 @@ router.delete("/:listId/members/:userId", async (req: Request, res: Response) =>
 });
 
 // Update a member's role in a list
-router.put("/:listId/members/:userId", async (req: Request, res: Response) => {
+router.put("/:listId/members/:userId", isListOwner, async (req: Request, res: Response) => {
     const listId = +req.params.listId;
     const userId = +req.params.userId;
     const { role } = req.body;
@@ -87,7 +88,7 @@ router.put("/:listId/members/:userId", async (req: Request, res: Response) => {
 });
 
 // Get all lists a user is a member of
-router.get("/user/:userId/lists", async (req: Request, res: Response) => {
+router.get("/user/:userId/lists", isListOwner || isListMember, async (req: Request, res: Response) => {
     const userId = +req.params.userId;
 
     try {
