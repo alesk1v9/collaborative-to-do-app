@@ -72,3 +72,36 @@ export const isListMember = async (req: Request, res: Response, next: NextFuncti
     res.status(401).json({ message: "Token invalid or expired" });
   }
 };
+
+export const isOwnerOrMember = async (req: Request, res: Response, next: NextFunction) => {
+  const token = req.header('x-auth-token');
+  const listId = +req.params.listId;
+
+  if (!token) {
+    res.status(401).json({ message: "Unauthorized" });
+    return;
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+
+    const listMember = await ListMember.findOne({
+      where: { listId, userId: decoded.id }
+    });
+
+    let isOwner = false;
+    const list = await List.findByPk(listId);
+    if (list && list.userId === decoded.id) {
+      isOwner = true;
+    }
+
+    if (!listMember && !isOwner) {
+      res.status(403).json({ message: "You are not a member or owner of this list" });
+      return;
+    }
+
+    next();
+  } catch (err) {
+    res.status(401).json({ message: "Token invalid or expired" });
+  }
+};

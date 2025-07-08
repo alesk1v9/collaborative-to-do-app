@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import { List, Task, User, ListMember } from "../../models/index";
-import { isListOwner, isListMember, isAuthenticated } from "../../middleware/authMiddleware";
+import { isListOwner, isListMember, isAuthenticated, isOwnerOrMember } from "../../middleware/authMiddleware";
 import { ListProps } from "../../types/list";
 
 const router = Router();

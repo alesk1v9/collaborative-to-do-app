@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import { User, List, Task } from "../../models/index";
 import { TaskProps } from "../../types/task";
-import { isListOwner, isListMember, isAuthenticated } from "../../middleware/authMiddleware";
+import { isListOwner, isListMember, isAuthenticated, isOwnerOrMember } from "../../middleware/authMiddleware";
 
 
 const router = Router();
@@ -115,7 +115,7 @@ router.delete("/:id", isListOwner, async (req: Request, res: Response) => {
 
 
 // Mark a task as completed
-router.patch("/:id/complete", isListOwner || isListMember, async (req: Request, res: Response) => {
+router.patch("/:id/complete", isOwnerOrMember, async (req: Request, res: Response) => {
     try {
         const taskId = req.params.id;
         const { completedById } = req.body;
@@ -160,7 +160,7 @@ router.patch("/:id/assign", isListOwner, async (req: Request, res: Response) => 
 });
 
 // Get tasks by list ID
-router.get("/list/:listId", isListOwner || isListMember, async (req: Request, res: Response) => {
+router.get("/list/:listId", isOwnerOrMember, async (req: Request, res: Response) => {
     try {
         const listId = req.params.listId;
         const tasks: TaskProps[] = await Task.findAll({

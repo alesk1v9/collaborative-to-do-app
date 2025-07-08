@@ -1,11 +1,11 @@
 import { Router, Request, Response } from "express";
 import { User, ListMember, List } from "../../models/index";
-import { isListOwner, isListMember, isAuthenticated } from "../../middleware/authMiddleware";
+import { isListOwner, isListMember, isAuthenticated, isOwnerOrMember } from "../../middleware/authMiddleware";
 
 const router = Router();
 
 // Get all members of a list
-router.get("/:listId/members", isListOwner || isListMember, async (req: Request, res: Response) => {
+router.get("/:listId/members", isOwnerOrMember, async (req: Request, res: Response) => {
     const listId = req.params.listId;
     try {
         const members = await ListMember.findAll({
@@ -88,7 +88,7 @@ router.put("/:listId/members/:userId", isListOwner, async (req: Request, res: Re
 });
 
 // Get all lists a user is a member of
-router.get("/user/:userId/lists", isListOwner || isListMember, async (req: Request, res: Response) => {
+router.get("/user/:userId/lists", isAuthenticated, async (req: Request, res: Response) => {
     const userId = +req.params.userId;
 
     try {
