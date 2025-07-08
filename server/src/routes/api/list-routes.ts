@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { List, Task, User } from "../../models/index";
+import { List, Task, User, ListMember } from "../../models/index";
 import { ListProps } from "../../types/list";
 
 const router = Router();
@@ -70,6 +70,13 @@ router.post("/", async (req: Request, res: Response) => {
         }
 
         const newList = await List.create({ name, userId });
+
+        await ListMember.create({
+            listId: newList.id,
+            userId: userId,
+            role: "owner", // Assuming the creator is the owner
+        });
+
         res.status(201).json(newList);
     } catch (error) {
         console.error("Error creating list:", error);
