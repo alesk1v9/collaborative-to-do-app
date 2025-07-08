@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
 import { List, Task, User, ListMember } from "../../models/index";
+import { isListOwner, isListMember } from "../../middleware/authMiddleware";
 import { ListProps } from "../../types/list";
 
 const router = Router();
@@ -85,7 +86,7 @@ router.post("/", async (req: Request, res: Response) => {
 });
 
 // Update a list by ID
-router.put("/:id", async (req: Request, res: Response) => {
+router.put("/:id", isListOwner ,async (req: Request, res: Response) => {
     try {
         const listId = req.params.id;
         const { name } = req.body;
@@ -112,7 +113,7 @@ router.put("/:id", async (req: Request, res: Response) => {
 });
 
 // Delete a list by ID
-router.delete("/:id", async (req: Request, res: Response) => {
+router.delete("/:id", isListOwner, async (req: Request, res: Response) => {
     try {
         const listId = req.params.id;
 
@@ -128,6 +129,5 @@ router.delete("/:id", async (req: Request, res: Response) => {
         res.status(500).json({ error: "Internal server error" });
     }
 });
-
 
 export default router;
