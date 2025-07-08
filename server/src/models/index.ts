@@ -15,7 +15,7 @@ List.hasMany(Task, { foreignKey: 'listId', // a list can have many tasks
 Task.belongsTo(List, { foreignKey: 'listId' }); // each task belongs to a list
 
 User.hasMany(Task, { foreignKey: 'assignedToId' }); // a user can be assigned many tasks
-Task.belongsTo(User, { foreignKey: 'assignedToId' }); // each task can be assigned to a user
+Task.belongsTo(User, { as: "assignedTo", foreignKey: "assignedToId" }); // each task can be assigned to a user
 
 User.hasMany(Task, { foreignKey: 'completedById' }); // a user can complete many tasks
 Task.belongsTo(User, { foreignKey: 'completedById' }); // each task can be completed by a user

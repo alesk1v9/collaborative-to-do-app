@@ -47,7 +47,7 @@ Task.init(
         },
         completedById: {
             type: DataTypes.INTEGER,
-            allowNull: false,
+            allowNull: true,
         },
         assignedToId: {
             type: DataTypes.INTEGER,
