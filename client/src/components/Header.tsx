@@ -1,3 +1,5 @@
+
+
 const Header = () => {
   return (
     <header className="">
@@ -9,7 +11,7 @@ const Header = () => {
             </div>
             
             <div className="">
-                <a href="#" className="">Log in</a>
+                <a href="/login" className="">Log in</a>
           </div>
         </nav>
     </header>
