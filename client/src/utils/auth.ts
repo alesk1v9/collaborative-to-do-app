@@ -1,9 +1,10 @@
 import { jwtDecode } from "jwt-decode";
+import type { userProps } from "../types/user";
 
-export const getUserFromToken = (token: string) => {
+export const getUserFromToken = (token: string): userProps | null => {
     if (!token) return null;
     try {
-        const decoded = jwtDecode(token);
+        const decoded = jwtDecode(token) as userProps;
         return decoded;
     } catch (error) {
         console.error("Invalid token", error);

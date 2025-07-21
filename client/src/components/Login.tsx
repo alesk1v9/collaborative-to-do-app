@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { api } from "../utils/api";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/authContext";
 
 const Login = () => {
+
+  const { login } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,7 +20,7 @@ const Login = () => {
     try {
       const response = await api.post("auth/login", { email, password });
 
-      localStorage.setItem("token", response.data.token);
+      login(response.data.token);
       
       navigate("/dashboard");
 
